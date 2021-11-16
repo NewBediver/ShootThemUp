@@ -29,4 +29,8 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
 
     // Called to bind functionality to input
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+  private:
+    void MoveForward(float Amount);
+    void MoveRight(float Amount);
 };
