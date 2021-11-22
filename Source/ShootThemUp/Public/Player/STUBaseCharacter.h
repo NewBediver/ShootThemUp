@@ -15,7 +15,7 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
 
   public:
     // Sets default values for this character's properties
-    ASTUBaseCharacter();
+    ASTUBaseCharacter(const FObjectInitializer& ObjInit);
 
   protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -34,7 +34,16 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
     // Called to bind functionality to input
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+    UFUNCTION(BlueprintCallable, Category = "Movement")
+    bool IsRunning() const;
+
   private:
     void MoveForward(float Amount);
     void MoveRight(float Amount);
+
+    void OnStartRunnig();
+    void OnStopRunning();
+
+    bool want_to_run_ = false;
+    bool is_moving_forward_ = false;
 };
