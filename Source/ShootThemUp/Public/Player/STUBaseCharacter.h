@@ -37,6 +37,9 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
     UFUNCTION(BlueprintCallable, Category = "Movement")
     bool IsRunning() const;
 
+    UFUNCTION(BlueprintCallable, Category = "Movement")
+    float GetMovementDirection() const;
+
   private:
     void MoveForward(float Amount);
     void MoveRight(float Amount);
