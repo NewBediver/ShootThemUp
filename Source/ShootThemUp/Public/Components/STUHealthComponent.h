@@ -25,5 +25,9 @@ class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent {
     float max_health_ = 100.0f;
 
   private:
+    UFUNCTION()
+    void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType,
+                         class AController* InstigatedBy, AActor* DamageCauser);
+
     float health_ = 0.0f;
 };

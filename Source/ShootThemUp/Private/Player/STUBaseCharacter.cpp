@@ -10,7 +10,8 @@
 
 // Sets default values
 ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer& ObjInit)
-    : Super(ObjInit.SetDefaultSubobjectClass<USTUCharacterMovementComponent>(ACharacter::CharacterMovementComponentName)) {
+    : Super(ObjInit.SetDefaultSubobjectClass<USTUCharacterMovementComponent>(
+          ACharacter::CharacterMovementComponentName)) {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance
     // if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
@@ -42,6 +43,8 @@ void ASTUBaseCharacter::Tick(float DeltaTime) {
 
     const auto health = HealthComponent->GetHealth();
     HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), health)));
+
+    TakeDamage(0.1f, FDamageEvent(), Controller, this);
 }
 
 // Called to bind functionality to input
@@ -59,9 +62,7 @@ void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 }
 
 bool ASTUBaseCharacter::IsRunning() const {
-    return want_to_run_ &&
-           is_moving_forward_ &&
-           !GetVelocity().IsNearlyZero(0.5f);
+    return want_to_run_ && is_moving_forward_ && !GetVelocity().IsNearlyZero(0.5f);
 }
 
 float ASTUBaseCharacter::GetMovementDirection() const {
@@ -69,13 +70,13 @@ float ASTUBaseCharacter::GetMovementDirection() const {
         return 0.0f;
     }
     const auto velocity_normal = GetVelocity().GetSafeNormal();
-    const auto angle_between = FMath::Acos(FVector::DotProduct(GetActorForwardVector(),
-                                                                          velocity_normal));
+    const auto angle_between =
+        FMath::Acos(FVector::DotProduct(GetActorForwardVector(), velocity_normal));
     const auto cross_product = FVector::CrossProduct(GetActorForwardVector(), velocity_normal);
     const auto degrees = FMath::RadiansToDegrees(angle_between);
-    return cross_product.IsZero() ?
-           degrees :
-           FMath::RadiansToDegrees(angle_between) * FMath::Sign(cross_product.Z);
+    return cross_product.IsZero()
+               ? degrees
+               : FMath::RadiansToDegrees(angle_between) * FMath::Sign(cross_product.Z);
 }
 
 void ASTUBaseCharacter::MoveForward(float Amount) {
