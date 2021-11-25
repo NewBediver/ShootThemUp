@@ -29,6 +29,9 @@ class SHOOTTHEMUP_API ASTUDevDamageActor : public AActor {
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool do_full_damage_ = false;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSubclassOf<UDamageType> damage_type_ = nullptr;
+
   protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
