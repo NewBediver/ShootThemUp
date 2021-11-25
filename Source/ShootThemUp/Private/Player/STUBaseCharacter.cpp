@@ -43,8 +43,6 @@ void ASTUBaseCharacter::Tick(float DeltaTime) {
 
     const auto health = HealthComponent->GetHealth();
     HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), health)));
-
-    TakeDamage(0.1f, FDamageEvent(), Controller, this);
 }
 
 // Called to bind functionality to input

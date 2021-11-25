@@ -2,6 +2,8 @@
 
 #include "Components/STUHealthComponent.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All)
+
 // Sets default values for this component's properties
 USTUHealthComponent::USTUHealthComponent() {
     PrimaryComponentTick.bCanEverTick = false;
@@ -27,4 +29,5 @@ void USTUHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage,
                                           const class UDamageType* DamageType,
                                           class AController* InstigatedBy, AActor* DamageCauser) {
     health_ -= Damage;
+    UE_LOG(LogHealthComponent, Display, TEXT("Damage: %f"), Damage);
 }
