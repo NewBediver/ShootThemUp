@@ -8,6 +8,8 @@
 #include "Components/STUHealthComponent.h"
 #include "Components/TextRenderComponent.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All)
+
 // Sets default values
 ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer& ObjInit)
     : Super(ObjInit.SetDefaultSubobjectClass<USTUCharacterMovementComponent>(
@@ -35,14 +37,16 @@ void ASTUBaseCharacter::BeginPlay() {
 
     check(HealthComponent);
     check(HealthTextComponent);
+    check(GetCharacterMovement());
+
+    OnHealthChanged(HealthComponent->GetHealth());
+    HealthComponent->OnDeath.AddUObject(this, &ASTUBaseCharacter::OnDeath);
+    HealthComponent->OnHealthChanged.AddUObject(this, &ASTUBaseCharacter::OnHealthChanged);
 }
 
 // Called every frame
 void ASTUBaseCharacter::Tick(float DeltaTime) {
     Super::Tick(DeltaTime);
-
-    const auto health = HealthComponent->GetHealth();
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), health)));
 }
 
 // Called to bind functionality to input
@@ -98,4 +102,16 @@ void ASTUBaseCharacter::OnStartRunnig() {
 
 void ASTUBaseCharacter::OnStopRunning() {
     want_to_run_ = false;
+}
+
+void ASTUBaseCharacter::OnDeath() {
+    UE_LOG(LogBaseCharacter, Display, TEXT("Player %s is dead"), *GetName());
+
+    PlayAnimMontage(DeathAnimMontage);
+    GetCharacterMovement()->DisableMovement();
+    SetLifeSpan(5.0f);
+}
+
+void ASTUBaseCharacter::OnHealthChanged(float health) {
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), health)));
 }

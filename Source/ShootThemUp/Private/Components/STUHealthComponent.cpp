@@ -16,6 +16,7 @@ void USTUHealthComponent::BeginPlay() {
     Super::BeginPlay();
 
     health_ = max_health_;
+    OnHealthChanged.Broadcast(health_);
 
     auto owner = GetOwner();
     if (owner != nullptr) {
@@ -27,17 +28,20 @@ float USTUHealthComponent::GetHealth() const {
     return health_;
 }
 
+bool USTUHealthComponent::IsDead() const {
+    return GetHealth() <= 0.0f;
+}
+
 void USTUHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage,
                                           const class UDamageType* DamageType,
                                           class AController* InstigatedBy, AActor* DamageCauser) {
-    health_ -= Damage;
-    UE_LOG(LogHealthComponent, Display, TEXT("Damage: %f"), Damage);
-
-    if (DamageType != nullptr) {
-        if (DamageType->IsA<USTUFireDamageType>()) {
-            UE_LOG(LogHealthComponent, Display, TEXT("So hoooooooot!!!"));
-        } else if (DamageType->IsA<USTUIceDamageType>()) {
-            UE_LOG(LogHealthComponent, Display, TEXT("So cooooooold!!!"));
-        }
+    if (Damage <= 0.0f ||
+        IsDead()) {
+        return;
+    }
+    health_ = FMath::Clamp(health_ - Damage, 0.0f, max_health_);
+    OnHealthChanged.Broadcast(health_);
+    if (IsDead()) {
+        OnDeath.Broadcast();
     }
 }
