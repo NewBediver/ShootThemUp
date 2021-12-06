@@ -9,7 +9,7 @@
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/Controller.h"
 
-DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All)
+DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All);
 
 // Sets default values
 ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer& ObjInit)
@@ -55,6 +55,8 @@ void ASTUBaseCharacter::Tick(float DeltaTime) {
 // Called to bind functionality to input
 void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+    check(PlayerInputComponent);
 
     PlayerInputComponent->BindAxis("MoveForward", this, &ASTUBaseCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ASTUBaseCharacter::MoveRight);
@@ -112,7 +114,7 @@ void ASTUBaseCharacter::OnDeath() {
 
     PlayAnimMontage(DeathAnimMontage);
     GetCharacterMovement()->DisableMovement();
-    SetLifeSpan(5.0f);
+    SetLifeSpan(LifeSpanOnDeath);
 
     if (Controller != nullptr) {
         Controller->ChangeState(NAME_Spectating);
@@ -124,7 +126,7 @@ void ASTUBaseCharacter::OnHealthChanged(float health) {
 }
 
 void ASTUBaseCharacter::OnGroundLanded(const FHitResult& Hit) {
-    const auto fall_velocity_z = -GetCharacterMovement()->Velocity.Z;
+    const auto fall_velocity_z = -GetVelocity().Z;
     UE_LOG(LogBaseCharacter, Display, TEXT("On landed: %f"), fall_velocity_z);
 
     if (fall_velocity_z < LandedDamageVelocity.X) {
