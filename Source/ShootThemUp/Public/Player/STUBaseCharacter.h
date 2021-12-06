@@ -35,6 +35,12 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     UAnimMontage* DeathAnimMontage = nullptr;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Movement")
+    FVector2D LandedDamageVelocity = FVector2D(900.0f, 1200.0f);
+
+    UPROPERTY(EditDefaultsOnly, Category = "Movement")
+    FVector2D LandedDamage = FVector2D(10.0, 100.0f);
+
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
@@ -60,6 +66,9 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
 
     void OnDeath();
     void OnHealthChanged(float health);
+
+    UFUNCTION()
+    void OnGroundLanded(const FHitResult& Hit);
 
     bool want_to_run_ = false;
     bool is_moving_forward_ = false;
