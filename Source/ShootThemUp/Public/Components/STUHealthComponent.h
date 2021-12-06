@@ -33,10 +33,30 @@ class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent {
               meta = (ClampMin = "0.0", ClampMax = "1000.0"))
     float max_health_ = 100.0f;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    bool auto_heal_ = true;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal",
+              meta = (EditCondition = "auto_heal_"))
+    float heal_update_time_ = 1.0f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal",
+              meta = (EditCondition = "auto_heal_"))
+    float heal_delay_ = 3.0f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal",
+              meta = (EditCondition = "auto_heal_"))
+    float heal_modifier_ = 5.0f;
+
   private:
     UFUNCTION()
     void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType,
                          class AController* InstigatedBy, AActor* DamageCauser);
 
+    void HealUpdate();
+
+    void SetHealth(float NewHealth);
+
     float health_ = 0.0f;
+    FTimerHandle heal_time_handle_;
 };

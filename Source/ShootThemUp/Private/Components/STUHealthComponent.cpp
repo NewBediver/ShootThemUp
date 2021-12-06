@@ -3,6 +3,8 @@
 #include "Components/STUHealthComponent.h"
 #include "Dev/STUFireDamageType.h"
 #include "Dev/STUIceDamageType.h"
+#include "Engine/World.h"
+#include "TimerManager.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All)
 
@@ -15,8 +17,7 @@ USTUHealthComponent::USTUHealthComponent() {
 void USTUHealthComponent::BeginPlay() {
     Super::BeginPlay();
 
-    health_ = max_health_;
-    OnHealthChanged.Broadcast(health_);
+    SetHealth(max_health_);
 
     auto owner = GetOwner();
     if (owner != nullptr) {
@@ -29,19 +30,37 @@ float USTUHealthComponent::GetHealth() const {
 }
 
 bool USTUHealthComponent::IsDead() const {
-    return GetHealth() <= 0.0f;
+    return FMath::IsNearlyZero(health_);
 }
 
 void USTUHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage,
                                           const class UDamageType* DamageType,
                                           class AController* InstigatedBy, AActor* DamageCauser) {
     if (Damage <= 0.0f ||
-        IsDead()) {
+        IsDead() ||
+        GetWorld() == nullptr) {
         return;
     }
-    health_ = FMath::Clamp(health_ - Damage, 0.0f, max_health_);
-    OnHealthChanged.Broadcast(health_);
+    SetHealth(health_ - Damage);
     if (IsDead()) {
         OnDeath.Broadcast();
+    } else if (auto_heal_) {
+        GetWorld()->GetTimerManager().SetTimer(heal_time_handle_, this,
+                                               &USTUHealthComponent::HealUpdate, heal_update_time_,
+                                               true, heal_delay_);
     }
+}
+
+void USTUHealthComponent::HealUpdate() {
+    SetHealth(health_ + heal_modifier_);
+
+    if (FMath::IsNearlyEqual(health_, max_health_) &&
+        GetWorld() != nullptr) {
+        GetWorld()->GetTimerManager().ClearTimer(heal_time_handle_);
+    }
+}
+
+void USTUHealthComponent::SetHealth(float NewHealth) {
+    health_ = FMath::Clamp(NewHealth, 0.0f, max_health_);
+    OnHealthChanged.Broadcast(health_);
 }
