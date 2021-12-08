@@ -10,6 +10,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class USTUHealthComponent;
 class UTextRenderComponent;
+class ASTUBaseWeapon;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
@@ -44,6 +45,9 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
     UPROPERTY(EditDefaultsOnly, Category = "Damage")
     FVector2D LandedDamage = FVector2D(10.0, 100.0f);
 
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    TSubclassOf<ASTUBaseWeapon> WeaponClass;
+
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
@@ -72,6 +76,8 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
 
     UFUNCTION()
     void OnGroundLanded(const FHitResult& Hit);
+
+    void SpawnWeapon();
 
     bool want_to_run_ = false;
     bool is_moving_forward_ = false;
