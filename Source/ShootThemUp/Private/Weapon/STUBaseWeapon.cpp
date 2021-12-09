@@ -17,7 +17,6 @@ ASTUBaseWeapon::ASTUBaseWeapon() {
 }
 
 void ASTUBaseWeapon::Fire() {
-    UE_LOG(LogBaseWeapon, Display, TEXT("Fire!"));
     MakeShot();
 }
 
@@ -32,40 +31,70 @@ void ASTUBaseWeapon::MakeShot() {
         return;
     }
 
+    FVector trace_start;
+    FVector trace_end;
+    if (!GetTraceData(trace_start, trace_end)) {
+        return;
+    }
+
+    FHitResult hit_result;
+    MakeHit(hit_result, trace_start, trace_end);
+
+    if (hit_result.bBlockingHit &&
+        FVector::DotProduct(hit_result.ImpactPoint - GetMuzzleWorldLocation(),
+                            trace_end - GetMuzzleWorldLocation()) > 0.0f) {
+        DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), hit_result.ImpactPoint, FColor::Red,
+                      false, 3.0f, 0, 3.0f);
+        DrawDebugSphere(GetWorld(), hit_result.ImpactPoint, 10.0f, 24, FColor::Yellow, false, 5.0f);
+    } else {
+        DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), trace_end, FColor::Red, false, 3.0f, 0, 3.0f);
+    }
+}
+
+APlayerController* ASTUBaseWeapon::GetPlayerController() const {
     const auto player = Cast<ACharacter>(GetOwner());
     if (player == nullptr) {
-        return;
+        return nullptr;
     }
 
     const auto controller = player->GetController<APlayerController>();
     if (controller == nullptr) {
-        return;
+        return nullptr;
     }
 
+    return controller;
+}
+
+bool ASTUBaseWeapon::GetPlayerViewPoint(FVector& view_location, FRotator& view_rotation) const {
+    const auto controller = GetPlayerController();
+    if (controller == nullptr) {
+        return false;
+    }
+
+    controller->GetPlayerViewPoint(view_location, view_rotation);
+    return true;
+}
+
+FVector ASTUBaseWeapon::GetMuzzleWorldLocation() {
+    return WeaponMesh->GetSocketTransform(muzzle_socket_name_).GetTranslation();
+}
+
+bool ASTUBaseWeapon::GetTraceData(FVector& trace_start, FVector& trace_end) const {
     FVector view_location;
     FRotator view_rotation;
-    controller->GetPlayerViewPoint(view_location, view_rotation);
+    if (!GetPlayerViewPoint(view_location, view_rotation)) {
+        return false;
+    }
 
-    const auto socket_transform = WeaponMesh->GetSocketTransform(muzzle_socket_name_);
-    const auto trace_start = view_location;
-    const auto shoot_direction = view_rotation.Vector();
-    const auto trace_end = trace_start + shoot_direction * trace_max_distance_;
-    
+    trace_start = view_location;
+    trace_end = trace_start + view_rotation.Vector() * trace_max_distance_;
+    return true;
+}
 
+void ASTUBaseWeapon::MakeHit(FHitResult& hit_result, const FVector& trace_start,
+                             const FVector& trace_end) const {
     FCollisionQueryParams collision_params;
-    collision_params.AddIgnoredActor(player);
-
-    FHitResult hit_result;
+    collision_params.AddIgnoredActor(GetOwner());
     GetWorld()->LineTraceSingleByChannel(hit_result, trace_start, trace_end,
                                          ECollisionChannel::ECC_Visibility, collision_params);
-
-    if (hit_result.bBlockingHit &&
-        FVector::DotProduct(hit_result.ImpactPoint - socket_transform.GetLocation(), trace_end - socket_transform.GetLocation()) > 0.0f) {
-        DrawDebugLine(GetWorld(), socket_transform.GetLocation(), hit_result.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
-        DrawDebugSphere(GetWorld(), hit_result.ImpactPoint, 10.0f, 24, FColor::Yellow, false, 5.0f);
-
-        UE_LOG(LogBaseWeapon, Display, TEXT("Bone: %s"), *hit_result.BoneName.ToString());
-    } else {
-        DrawDebugLine(GetWorld(), socket_transform.GetLocation(), trace_end, FColor::Red, false, 3.0f, 0, 3.0f);
-    }
 }
