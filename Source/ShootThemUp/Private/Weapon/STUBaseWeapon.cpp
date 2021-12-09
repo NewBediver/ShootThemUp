@@ -43,6 +43,7 @@ void ASTUBaseWeapon::MakeShot() {
     if (hit_result.bBlockingHit &&
         FVector::DotProduct(hit_result.ImpactPoint - GetMuzzleWorldLocation(),
                             trace_end - GetMuzzleWorldLocation()) > 0.0f) {
+        MakeDamage(hit_result);
         DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), hit_result.ImpactPoint, FColor::Red,
                       false, 3.0f, 0, 3.0f);
         DrawDebugSphere(GetWorld(), hit_result.ImpactPoint, 10.0f, 24, FColor::Yellow, false, 5.0f);
@@ -97,4 +98,13 @@ void ASTUBaseWeapon::MakeHit(FHitResult& hit_result, const FVector& trace_start,
     collision_params.AddIgnoredActor(GetOwner());
     GetWorld()->LineTraceSingleByChannel(hit_result, trace_start, trace_end,
                                          ECollisionChannel::ECC_Visibility, collision_params);
+}
+
+void ASTUBaseWeapon::MakeDamage(const FHitResult& hit_result) {
+    const auto damaged_actor = hit_result.GetActor();
+    if (damaged_actor == nullptr) {
+        return;
+    }
+
+    damaged_actor->TakeDamage(damage_amount_, FDamageEvent(), GetPlayerController(), this);
 }
