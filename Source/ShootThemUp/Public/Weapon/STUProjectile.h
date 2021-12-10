@@ -7,6 +7,7 @@
 #include "STUProjectile.generated.h"
 
 class USphereComponent;
+class UProjectileMovementComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUProjectile : public AActor {
@@ -15,9 +16,17 @@ class SHOOTTHEMUP_API ASTUProjectile : public AActor {
   public:
     ASTUProjectile();
 
+    void SetShotDirection(FVector direction);
+
   protected:
+    virtual void BeginPlay() override;
+
     UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
     USphereComponent* CollisionComponent = nullptr;
 
-    virtual void BeginPlay() override;
+    UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
+    UProjectileMovementComponent* MovementComponent = nullptr;
+
+  private:
+    FVector direction_;
 };
