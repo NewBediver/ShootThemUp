@@ -8,11 +8,18 @@ USTUWeaponComponent::USTUWeaponComponent() {
     PrimaryComponentTick.bCanEverTick = false;
 }
 
-void USTUWeaponComponent::Fire() {
+void USTUWeaponComponent::StartFire() {
     if (current_weapon_ == nullptr) {
         return;
     }
-    current_weapon_->Fire();
+    current_weapon_->StartFire();
+}
+
+void USTUWeaponComponent::StopFire() {
+    if (current_weapon_ == nullptr) {
+        return;
+    }
+    current_weapon_->StopFire();
 }
 
 void USTUWeaponComponent::BeginPlay() {
