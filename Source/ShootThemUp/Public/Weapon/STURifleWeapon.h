@@ -21,12 +21,17 @@ class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon {
     void MakeShot() override;
     bool GetTraceData(FVector& trace_start, FVector& trace_end) const override;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     float time_between_shots_ = 0.1f;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     float bullet_spread_ = 1.5f;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+    float damage_amount_ = 10.0f;
+
   private:
+    void MakeDamage(const FHitResult& hit_result);
+
     FTimerHandle shot_timer_handle_;
 };
