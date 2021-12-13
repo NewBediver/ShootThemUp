@@ -8,6 +8,17 @@
 
 class ASTUBaseWeapon;
 
+USTRUCT(BlueprintType)
+struct FWeaponData {
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    TSubclassOf<ASTUBaseWeapon> WeaponClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    UAnimMontage* ReloadAnimMontage = nullptr;
+};
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
     GENERATED_BODY()
@@ -18,13 +29,14 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
     void StartFire();
     void StopFire();
     void NextWeapon();
+    void Reload();
 
   protected:
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    TArray<TSubclassOf<ASTUBaseWeapon>> WeaponClasses;
+    TArray<FWeaponData> WeaponData;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     FName WeaponEquipSocketName = "WeaponSocket";
@@ -53,6 +65,9 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
 
     UPROPERTY();
     TArray<ASTUBaseWeapon*> weapons_;
+
+    UPROPERTY();
+    UAnimMontage* current_reload_anim_montage_ = nullptr;
 
     int32 current_weapon_index_ = 0;
 
