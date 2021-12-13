@@ -49,16 +49,32 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
 
   private:
     void SpawnWeapons();
-    void AttachWeaponToSocket(ASTUBaseWeapon* weapon,
-                              USceneComponent* scene_component,
+    void AttachWeaponToSocket(ASTUBaseWeapon* weapon, USceneComponent* scene_component,
                               const FName& socket_name);
     void EquipWeapon(int32 weapon_index);
 
     void PlayAnimMontage(UAnimMontage* animation);
     void InitAnimations();
+
     void OnEquipFinished(USkeletalMeshComponent* mesh);
+    void OnReloadFinished(USkeletalMeshComponent* mesh);
+
     bool CanFire() const;
     bool CanEquip() const;
+    bool CanReload() const;
+
+    template <typename T> T* FindNotifyByClass(UAnimSequenceBase* animation) {
+        if (animation == nullptr) {
+            return nullptr;
+        }
+        for (auto notify_event : animation->Notifies) {
+            auto anim_notify = Cast<T>(notify_event.Notify);
+            if (anim_notify != nullptr) {
+                return anim_notify;
+            }
+        }
+        return nullptr;
+    }
 
     UPROPERTY();
     ASTUBaseWeapon* current_weapon_ = nullptr;
@@ -72,4 +88,5 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
     int32 current_weapon_index_ = 0;
 
     bool equip_anim_in_progress_ = false;
+    bool reload_anim_in_progress_ = false;
 };

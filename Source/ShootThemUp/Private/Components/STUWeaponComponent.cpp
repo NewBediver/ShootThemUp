@@ -4,6 +4,7 @@
 #include "Weapon/STUBaseWeapon.h"
 #include "GameFramework/Character.h"
 #include "Animations/STUEquipFinishedAnimNotify.h"
+#include "Animations/STUReloadFinishedAnimNotify.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All)
 
@@ -35,6 +36,10 @@ void USTUWeaponComponent::NextWeapon() {
 }
 
 void USTUWeaponComponent::Reload() {
+    if (!CanReload()) {
+        return;
+    }
+    reload_anim_in_progress_ = true;
     PlayAnimMontage(current_reload_anim_montage_);
 }
 
@@ -128,15 +133,18 @@ void USTUWeaponComponent::PlayAnimMontage(UAnimMontage* animation) {
 }
 
 void USTUWeaponComponent::InitAnimations() {
-    if (EquipAnimMontage == nullptr) {
-        return;
+    auto equip_finished_notify = FindNotifyByClass<USTUEquipFinishedAnimNotify>(EquipAnimMontage);
+    if (equip_finished_notify != nullptr) {
+        equip_finished_notify->OnNotified.AddUObject(this, &USTUWeaponComponent::OnEquipFinished);
     }
-    for (auto notify_event : EquipAnimMontage->Notifies) {
-        auto on_equip_end_notify = Cast<USTUEquipFinishedAnimNotify>(notify_event.Notify);
-        if (on_equip_end_notify != nullptr) {
-            on_equip_end_notify->OnNotified.AddUObject(this, &USTUWeaponComponent::OnEquipFinished);
-            break;
+
+    for (auto weapon_data : WeaponData) {
+        auto reload_finished_notify = FindNotifyByClass<USTUReloadFinishedAnimNotify>(weapon_data.ReloadAnimMontage);
+        if (reload_finished_notify == nullptr) {
+            continue;
         }
+        reload_finished_notify->OnNotified.AddUObject(this, &USTUWeaponComponent::OnReloadFinished);
+        break;
     }
 }
 
@@ -150,11 +158,29 @@ void USTUWeaponComponent::OnEquipFinished(USkeletalMeshComponent* mesh) {
     equip_anim_in_progress_ = false;
 }
 
+void USTUWeaponComponent::OnReloadFinished(USkeletalMeshComponent* mesh) {
+    const auto character = Cast<ACharacter>(GetOwner());
+    if (character == nullptr ||
+        character->GetMesh() != mesh) {
+        return;
+    }
+
+    reload_anim_in_progress_ = false;
+}
+
 bool USTUWeaponComponent::CanFire() const {
     return current_weapon_ != nullptr &&
-           !equip_anim_in_progress_;
+           !equip_anim_in_progress_ &&
+           !reload_anim_in_progress_;
 }
 
 bool USTUWeaponComponent::CanEquip() const {
-    return !equip_anim_in_progress_;
+    return !equip_anim_in_progress_ &&
+           !reload_anim_in_progress_;
+}
+
+bool USTUWeaponComponent::CanReload() const {
+    return current_weapon_ != nullptr &&
+           !equip_anim_in_progress_ &&
+           !reload_anim_in_progress_;
 }
