@@ -22,12 +22,28 @@ void USTUWeaponComponent::StopFire() {
     current_weapon_->StopFire();
 }
 
-void USTUWeaponComponent::BeginPlay() {
-    Super::BeginPlay();
-    SpawnWeapon();
+void USTUWeaponComponent::NextWeapon() {
+    current_weapon_index_ = (current_weapon_index_ + 1) % weapons_.Num();
+    EquipWeapon(current_weapon_index_);
 }
 
-void USTUWeaponComponent::SpawnWeapon() {
+void USTUWeaponComponent::BeginPlay() {
+    Super::BeginPlay();
+    SpawnWeapons();
+    EquipWeapon(current_weapon_index_);
+}
+
+void USTUWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+    current_weapon_ = nullptr;
+    for (auto weapon : weapons_) {
+        weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+        weapon->Destroy();
+    }
+    weapons_.Empty();
+    Super::EndPlay(EndPlayReason);
+}
+
+void USTUWeaponComponent::SpawnWeapons() {
     if (GetWorld() == nullptr) {
         return;
     }
@@ -37,13 +53,41 @@ void USTUWeaponComponent::SpawnWeapon() {
         return;
     }
 
-    current_weapon_ = GetWorld()->SpawnActor<ASTUBaseWeapon>(WeaponClass);
-    if (current_weapon_ == nullptr) {
+    for (auto weapon_class : WeaponClasses) {
+        auto weapon = GetWorld()->SpawnActor<ASTUBaseWeapon>(weapon_class);
+        if (weapon == nullptr) {
+            continue;
+        }
+
+        weapon->SetOwner(character);
+        weapons_.Add(weapon);
+
+        AttachWeaponToSocket(weapon, character->GetMesh(), WeaponArmorySocketName);
+    }
+}
+
+void USTUWeaponComponent::AttachWeaponToSocket(ASTUBaseWeapon* weapon,
+                                               USceneComponent* scene_component,
+                                               const FName& socket_name) {
+    if (weapon == nullptr ||
+        scene_component == nullptr) {
+        return;
+    }
+    FAttachmentTransformRules attachment_rules(EAttachmentRule::SnapToTarget, false);
+    weapon->AttachToComponent(scene_component, attachment_rules, socket_name);
+}
+
+void USTUWeaponComponent::EquipWeapon(int32 weapon_index) {
+    const auto character = Cast<ACharacter>(GetOwner());
+    if (character == nullptr) {
         return;
     }
 
-    FAttachmentTransformRules attachment_rules(EAttachmentRule::SnapToTarget, false);
-    current_weapon_->AttachToComponent(character->GetMesh(), attachment_rules,
-                                       WeaponAttachPointName);
-    current_weapon_->SetOwner(character);
+    if (current_weapon_ != nullptr) {
+        current_weapon_->StopFire();
+        AttachWeaponToSocket(current_weapon_, character->GetMesh(), WeaponArmorySocketName);
+    }
+
+    current_weapon_ = weapons_[weapon_index];
+    AttachWeaponToSocket(current_weapon_, character->GetMesh(), WeaponEquipSocketName);
 }

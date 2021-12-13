@@ -17,19 +17,33 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
 
     void StartFire();
     void StopFire();
+    void NextWeapon();
 
   protected:
     virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    TSubclassOf<ASTUBaseWeapon> WeaponClass;
+    TArray<TSubclassOf<ASTUBaseWeapon>> WeaponClasses;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    FName WeaponAttachPointName = "WeaponSocket";
+    FName WeaponEquipSocketName = "WeaponSocket";
+
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    FName WeaponArmorySocketName = "ArmorySocket";
 
   private:
+    void SpawnWeapons();
+    void AttachWeaponToSocket(ASTUBaseWeapon* weapon,
+                              USceneComponent* scene_component,
+                              const FName& socket_name);
+    void EquipWeapon(int32 weapon_index);
+
     UPROPERTY();
     ASTUBaseWeapon* current_weapon_ = nullptr;
 
-    void SpawnWeapon();
+    UPROPERTY();
+    TArray<ASTUBaseWeapon*> weapons_;
+
+    int32 current_weapon_index_ = 0;
 };
