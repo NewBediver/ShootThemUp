@@ -45,6 +45,8 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
     void PlayAnimMontage(UAnimMontage* animation);
     void InitAnimations();
     void OnEquipFinished(USkeletalMeshComponent* mesh);
+    bool CanFire() const;
+    bool CanEquip() const;
 
     UPROPERTY();
     ASTUBaseWeapon* current_weapon_ = nullptr;
@@ -53,4 +55,6 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
     TArray<ASTUBaseWeapon*> weapons_;
 
     int32 current_weapon_index_ = 0;
+
+    bool equip_anim_in_progress_ = false;
 };
