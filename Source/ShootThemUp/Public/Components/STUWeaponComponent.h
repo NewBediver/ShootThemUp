@@ -32,12 +32,19 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     FName WeaponArmorySocketName = "ArmorySocket";
 
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    UAnimMontage* EquipAnimMontage = nullptr;
+
   private:
     void SpawnWeapons();
     void AttachWeaponToSocket(ASTUBaseWeapon* weapon,
                               USceneComponent* scene_component,
                               const FName& socket_name);
     void EquipWeapon(int32 weapon_index);
+
+    void PlayAnimMontage(UAnimMontage* animation);
+    void InitAnimations();
+    void OnEquipFinished(USkeletalMeshComponent* mesh);
 
     UPROPERTY();
     ASTUBaseWeapon* current_weapon_ = nullptr;
