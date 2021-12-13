@@ -16,13 +16,16 @@ void ASTURifleWeapon::StopFire() {
 }
 
 void ASTURifleWeapon::MakeShot() {
-    if (GetWorld() == nullptr) {
+    if (GetWorld() == nullptr ||
+        IsAmmoEmpty()) {
+        StopFire();
         return;
     }
 
     FVector trace_start;
     FVector trace_end;
     if (!GetTraceData(trace_start, trace_end)) {
+        StopFire();
         return;
     }
 
@@ -40,6 +43,8 @@ void ASTURifleWeapon::MakeShot() {
         DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), trace_end, FColor::Red, false, 3.0f, 0,
                       3.0f);
     }
+
+    DecreaseAmmo();
 }
 
 bool ASTURifleWeapon::GetTraceData(FVector& trace_start, FVector& trace_end) const {

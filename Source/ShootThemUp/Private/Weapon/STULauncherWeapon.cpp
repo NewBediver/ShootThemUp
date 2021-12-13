@@ -10,7 +10,8 @@ void ASTULauncherWeapon::StartFire() {
 }
 
 void ASTULauncherWeapon::MakeShot() {
-    if (GetWorld() == nullptr) {
+    if (GetWorld() == nullptr ||
+        IsAmmoEmpty()) {
         return;
     }
 
@@ -33,6 +34,8 @@ void ASTULauncherWeapon::MakeShot() {
         projectile->SetOwner(GetOwner());
         projectile->FinishSpawning(spawn_transform);
     }
+
+    DecreaseAmmo();
 }
 
 bool ASTULauncherWeapon::GetTraceData(FVector& trace_start, FVector& trace_end) const {
