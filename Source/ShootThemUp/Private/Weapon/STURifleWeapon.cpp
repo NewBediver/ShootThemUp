@@ -6,9 +6,9 @@
 #include "DrawDebugHelpers.h"
 
 void ASTURifleWeapon::StartFire() {
-    MakeShot();
     GetWorldTimerManager().SetTimer(shot_timer_handle_, this, &ASTURifleWeapon::MakeShot,
                                     time_between_shots_, true);
+    MakeShot();
 }
 
 void ASTURifleWeapon::StopFire() {

@@ -12,12 +12,14 @@ void ASTULauncherWeapon::StartFire() {
 void ASTULauncherWeapon::MakeShot() {
     if (GetWorld() == nullptr ||
         IsAmmoEmpty()) {
+        StopFire();
         return;
     }
 
     FVector trace_start;
     FVector trace_end;
     if (!GetTraceData(trace_start, trace_end)) {
+        StopFire();
         return;
     }
 

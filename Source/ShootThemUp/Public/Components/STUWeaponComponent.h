@@ -63,6 +63,9 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
     bool CanEquip() const;
     bool CanReload() const;
 
+    void OnEmptyClip();
+    void ChangeClip();
+
     template <typename T> T* FindNotifyByClass(UAnimSequenceBase* animation) {
         if (animation == nullptr) {
             return nullptr;

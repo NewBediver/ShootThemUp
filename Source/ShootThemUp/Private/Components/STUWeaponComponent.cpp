@@ -36,11 +36,7 @@ void USTUWeaponComponent::NextWeapon() {
 }
 
 void USTUWeaponComponent::Reload() {
-    if (!CanReload()) {
-        return;
-    }
-    reload_anim_in_progress_ = true;
-    PlayAnimMontage(current_reload_anim_montage_);
+    ChangeClip();
 }
 
 void USTUWeaponComponent::BeginPlay() {
@@ -76,6 +72,7 @@ void USTUWeaponComponent::SpawnWeapons() {
             continue;
         }
 
+        weapon->FOnClipEmpty.AddUObject(this, &USTUWeaponComponent::OnEmptyClip);
         weapon->SetOwner(character);
         weapons_.Add(weapon);
 
@@ -144,7 +141,6 @@ void USTUWeaponComponent::InitAnimations() {
             continue;
         }
         reload_finished_notify->OnNotified.AddUObject(this, &USTUWeaponComponent::OnReloadFinished);
-        break;
     }
 }
 
@@ -182,5 +178,20 @@ bool USTUWeaponComponent::CanEquip() const {
 bool USTUWeaponComponent::CanReload() const {
     return current_weapon_ != nullptr &&
            !equip_anim_in_progress_ &&
-           !reload_anim_in_progress_;
+           !reload_anim_in_progress_ &&
+           current_weapon_->CanReload();
+}
+
+void USTUWeaponComponent::OnEmptyClip() {
+    ChangeClip();
+}
+
+void USTUWeaponComponent::ChangeClip() {
+    if (!CanReload()) {
+        return;
+    }
+    current_weapon_->StopFire();
+    current_weapon_->ChangeClip();
+    reload_anim_in_progress_ = true;
+    PlayAnimMontage(current_reload_anim_montage_);
 }
