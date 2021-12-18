@@ -16,6 +16,12 @@ class SHOOTTHEMUP_API ASTUGameHUD : public AHUD {
   public:
     void DrawHUD() override;
 
+  protected:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> player_hud_widget_class_;
+
+    void BeginPlay() override;
+
   private:
     void DrawCrossHair();
 };

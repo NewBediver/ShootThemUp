@@ -24,7 +24,7 @@ class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent {
     bool IsDead() const;
 
     UFUNCTION(BlueprintCallable, Category = "Health")
-    float GetHealthPercant() const;
+    float GetHealthPercent() const;
 
   protected:
     // Called when the game starts

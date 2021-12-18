@@ -35,7 +35,7 @@ bool USTUHealthComponent::IsDead() const {
     return FMath::IsNearlyZero(health_);
 }
 
-float USTUHealthComponent::GetHealthPercant() const {
+float USTUHealthComponent::GetHealthPercent() const {
     return GetHealth() / max_health_;
 }
 
