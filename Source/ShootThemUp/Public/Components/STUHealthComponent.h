@@ -23,6 +23,9 @@ class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent {
     UFUNCTION(BlueprintCallable, Category = "Health")
     bool IsDead() const;
 
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    float GetHealthPercant() const;
+
   protected:
     // Called when the game starts
     virtual void BeginPlay() override;

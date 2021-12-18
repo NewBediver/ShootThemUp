@@ -17,6 +17,8 @@ USTUHealthComponent::USTUHealthComponent() {
 void USTUHealthComponent::BeginPlay() {
     Super::BeginPlay();
 
+    check(max_health_ > 0);
+
     SetHealth(max_health_);
 
     auto owner = GetOwner();
@@ -31,6 +33,10 @@ float USTUHealthComponent::GetHealth() const {
 
 bool USTUHealthComponent::IsDead() const {
     return FMath::IsNearlyZero(health_);
+}
+
+float USTUHealthComponent::GetHealthPercant() const {
+    return GetHealth() / max_health_;
 }
 
 void USTUHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage,
