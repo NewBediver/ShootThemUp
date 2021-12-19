@@ -42,6 +42,14 @@ void USTUWeaponComponent::Reload() {
     ChangeClip();
 }
 
+bool USTUWeaponComponent::GetWeaponUIData(FWeaponUIData& ui_data) const {
+    if (current_weapon_ != nullptr) {
+        ui_data = current_weapon_->GetUIData();
+        return true;
+    }
+    return false;
+}
+
 void USTUWeaponComponent::BeginPlay() {
     Super::BeginPlay();
 

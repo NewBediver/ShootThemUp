@@ -23,6 +23,8 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor {
     void ChangeClip();
     bool CanReload() const;
 
+    FWeaponUIData GetUIData() const;
+
   protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
     USkeletalMeshComponent* WeaponMesh = nullptr;
@@ -35,6 +37,9 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor {
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     FAmmoData default_ammo_{15, 10, false};
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    FWeaponUIData ui_data_;
 
     virtual void BeginPlay() override;
     virtual void MakeShot();

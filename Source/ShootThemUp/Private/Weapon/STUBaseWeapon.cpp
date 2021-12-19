@@ -21,6 +21,10 @@ void ASTUBaseWeapon::StopFire() {}
 
 void ASTUBaseWeapon::MakeShot() {}
 
+FWeaponUIData ASTUBaseWeapon::GetUIData() const {
+    return ui_data_;
+}
+
 bool ASTUBaseWeapon::GetTraceData(FVector& trace_start, FVector& trace_end) const {
     return false;
 }
