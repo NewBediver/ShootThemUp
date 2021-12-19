@@ -24,6 +24,7 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor {
     bool CanReload() const;
 
     FWeaponUIData GetUIData() const;
+    FAmmoData GetAmmoData() const;
 
   protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")

@@ -7,6 +7,8 @@
 #include "STUCoreTypes.h"
 #include "STUPlayerHUDWidget.generated.h"
 
+class USTUWeaponComponent;
+
 UCLASS()
 class SHOOTTHEMUP_API USTUPlayerHUDWidget : public UUserWidget {
     GENERATED_BODY()
@@ -16,5 +18,11 @@ class SHOOTTHEMUP_API USTUPlayerHUDWidget : public UUserWidget {
     float GetHealthPercent() const;
 
     UFUNCTION(BlueprintCallable, Category = "UI")
-    bool GetWeaponUIData(FWeaponUIData& ui_data) const;
+    bool GetCurrentWeaponUIData(FWeaponUIData& ui_data) const;
+
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    bool GetCurrentAmmoData(FAmmoData& ui_data) const;
+
+  private:
+    USTUWeaponComponent* GetWeaponComponent() const;
 };

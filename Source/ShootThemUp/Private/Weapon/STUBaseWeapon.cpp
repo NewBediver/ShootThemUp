@@ -25,6 +25,10 @@ FWeaponUIData ASTUBaseWeapon::GetUIData() const {
     return ui_data_;
 }
 
+FAmmoData ASTUBaseWeapon::GetAmmoData() const {
+    return current_ammo_;
+}
+
 bool ASTUBaseWeapon::GetTraceData(FVector& trace_start, FVector& trace_end) const {
     return false;
 }

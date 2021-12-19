@@ -22,6 +22,7 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
     void Reload();
 
     bool GetWeaponUIData(FWeaponUIData& ui_data) const;
+    bool GetAmmoData(FAmmoData& ammo_data) const;
 
   protected:
     virtual void BeginPlay() override;
