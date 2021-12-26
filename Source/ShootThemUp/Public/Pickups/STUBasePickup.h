@@ -33,4 +33,8 @@ class SHOOTTHEMUP_API ASTUBasePickup : public AActor {
 
     void PickupWasTaken();
     void Respawn();
+
+    void GenerateRotationYaw();
+
+    float rotation_yaw = 0.0f;
 };
