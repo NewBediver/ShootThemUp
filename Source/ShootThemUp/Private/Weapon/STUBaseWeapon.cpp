@@ -15,11 +15,14 @@ ASTUBaseWeapon::ASTUBaseWeapon() {
     SetRootComponent(WeaponMesh);
 }
 
-void ASTUBaseWeapon::StartFire() {}
+void ASTUBaseWeapon::StartFire() {
+}
 
-void ASTUBaseWeapon::StopFire() {}
+void ASTUBaseWeapon::StopFire() {
+}
 
-void ASTUBaseWeapon::MakeShot() {}
+void ASTUBaseWeapon::MakeShot() {
+}
 
 FWeaponUIData ASTUBaseWeapon::GetUIData() const {
     return ui_data_;
@@ -27,6 +30,35 @@ FWeaponUIData ASTUBaseWeapon::GetUIData() const {
 
 FAmmoData ASTUBaseWeapon::GetAmmoData() const {
     return current_ammo_;
+}
+
+bool ASTUBaseWeapon::TryToAddAmmo(int32 clips_amount) {
+    if (current_ammo_.IsInfinite ||
+        IsAmmoFull() ||
+        clips_amount <= 0) {
+        return false;
+    }
+
+    if (IsAmmoEmpty()) {
+        UE_LOG(LogBaseWeapon, Display, TEXT("Ammo was empty!"));
+        current_ammo_.Clips =
+            FMath::Clamp(current_ammo_.Clips + clips_amount, 0, default_ammo_.Clips + 1);
+        FOnClipEmpty.Broadcast(this);
+    } else if (current_ammo_.Clips < default_ammo_.Clips) {
+        const auto next_clips_amount = current_ammo_.Clips + clips_amount;
+        if (default_ammo_.Clips - next_clips_amount >= 0) {
+            current_ammo_.Clips = next_clips_amount;
+            UE_LOG(LogBaseWeapon, Display, TEXT("Clips were added!"));
+        } else {
+            current_ammo_.Clips = default_ammo_.Clips;
+            current_ammo_.Bullets = default_ammo_.Bullets;
+            UE_LOG(LogBaseWeapon, Display, TEXT("Ammo is full now!"));
+        }
+    } else {
+        current_ammo_.Bullets = default_ammo_.Bullets;
+        UE_LOG(LogBaseWeapon, Display, TEXT("Bullets were added!"));
+    }
+    return true;
 }
 
 bool ASTUBaseWeapon::GetTraceData(FVector& trace_start, FVector& trace_end) const {
@@ -86,17 +118,14 @@ void ASTUBaseWeapon::DecreaseAmmo() {
     }
     --current_ammo_.Bullets;
 
-    if (IsClipEmpty() &&
-        !IsAmmoEmpty()) {
+    if (IsClipEmpty() && !IsAmmoEmpty()) {
         StopFire();
-        FOnClipEmpty.Broadcast();
+        FOnClipEmpty.Broadcast(this);
     }
 }
 
 bool ASTUBaseWeapon::IsAmmoEmpty() const {
-  return !current_ammo_.IsInfinite &&
-         current_ammo_.Clips == 0 &&
-         IsClipEmpty();
+    return !current_ammo_.IsInfinite && current_ammo_.Clips == 0 && IsClipEmpty();
 }
 
 bool ASTUBaseWeapon::IsClipEmpty() const {
@@ -116,8 +145,12 @@ void ASTUBaseWeapon::ChangeClip() {
 }
 
 bool ASTUBaseWeapon::CanReload() const {
-    return current_ammo_.Bullets < default_ammo_.Bullets &&
-           current_ammo_.Clips > 0;
+    return current_ammo_.Bullets < default_ammo_.Bullets && current_ammo_.Clips > 0;
+}
+
+bool ASTUBaseWeapon::IsAmmoFull() const {
+    return current_ammo_.Clips == default_ammo_.Clips &&
+           current_ammo_.Bullets == default_ammo_.Bullets;
 }
 
 void ASTUBaseWeapon::LogAmmo() {

@@ -24,6 +24,8 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
     bool GetWeaponUIData(FWeaponUIData& ui_data) const;
     bool GetAmmoData(FAmmoData& ammo_data) const;
 
+    bool TryToAddAmmo(TSubclassOf<ASTUBaseWeapon> weapon_type, int32 clips_amount);
+
   protected:
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -56,7 +58,7 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
     bool CanEquip() const;
     bool CanReload() const;
 
-    void OnEmptyClip();
+    void OnEmptyClip(ASTUBaseWeapon* ammo_empty_weapon);
     void ChangeClip();
 
     UPROPERTY();

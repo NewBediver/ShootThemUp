@@ -58,10 +58,21 @@ bool USTUWeaponComponent::GetAmmoData(FAmmoData& ammo_data) const {
     return false;
 }
 
+bool USTUWeaponComponent::TryToAddAmmo(TSubclassOf<ASTUBaseWeapon> weapon_type,
+                                       int32 clips_amount) {
+    for (const auto& weapon : weapons_) {
+        if (weapon != nullptr && weapon->IsA(weapon_type)) {
+            return weapon->TryToAddAmmo(clips_amount);
+        }
+    }
+    return false;
+}
+
 void USTUWeaponComponent::BeginPlay() {
     Super::BeginPlay();
 
-    checkf(WeaponData.Num() == WEAPON_NUM, TEXT("Our character can hold only %i weapon items!"), WEAPON_NUM);
+    checkf(WeaponData.Num() == WEAPON_NUM, TEXT("Our character can hold only %i weapon items!"),
+           WEAPON_NUM);
 
     InitAnimations();
     SpawnWeapons();
@@ -105,8 +116,7 @@ void USTUWeaponComponent::SpawnWeapons() {
 void USTUWeaponComponent::AttachWeaponToSocket(ASTUBaseWeapon* weapon,
                                                USceneComponent* scene_component,
                                                const FName& socket_name) {
-    if (weapon == nullptr ||
-        scene_component == nullptr) {
+    if (weapon == nullptr || scene_component == nullptr) {
         return;
     }
     FAttachmentTransformRules attachment_rules(EAttachmentRule::SnapToTarget, false);
@@ -114,8 +124,7 @@ void USTUWeaponComponent::AttachWeaponToSocket(ASTUBaseWeapon* weapon,
 }
 
 void USTUWeaponComponent::EquipWeapon(int32 weapon_index) {
-  if (weapon_index < 0 ||
-    weapon_index >= weapons_.Num()) {
+    if (weapon_index < 0 || weapon_index >= weapons_.Num()) {
         UE_LOG(LogWeaponComponent, Display, TEXT("Invalid weapon index"));
         return;
     }
@@ -133,9 +142,8 @@ void USTUWeaponComponent::EquipWeapon(int32 weapon_index) {
     current_weapon_ = weapons_[weapon_index];
     const auto current_weapon_data = WeaponData.FindByPredicate(
         [&](const FWeaponData& data) { return data.WeaponClass == current_weapon_->GetClass(); });
-    current_reload_anim_montage_ = current_weapon_data != nullptr ?
-                                   current_weapon_data->ReloadAnimMontage :
-                                   nullptr;
+    current_reload_anim_montage_ =
+        current_weapon_data != nullptr ? current_weapon_data->ReloadAnimMontage : nullptr;
 
     AttachWeaponToSocket(current_weapon_, character->GetMesh(), WeaponEquipSocketName);
     equip_anim_in_progress_ = true;
@@ -162,8 +170,8 @@ void USTUWeaponComponent::InitAnimations() {
     }
 
     for (auto weapon_data : WeaponData) {
-        auto reload_finished_notify =
-            AnimUtils::FindNotifyByClass<USTUReloadFinishedAnimNotify>(weapon_data.ReloadAnimMontage);
+        auto reload_finished_notify = AnimUtils::FindNotifyByClass<USTUReloadFinishedAnimNotify>(
+            weapon_data.ReloadAnimMontage);
         if (reload_finished_notify == nullptr) {
             UE_LOG(LogWeaponComponent, Error, TEXT("Equip anim notify is forgotten to set!"));
             checkNoEntry();
@@ -174,8 +182,7 @@ void USTUWeaponComponent::InitAnimations() {
 
 void USTUWeaponComponent::OnEquipFinished(USkeletalMeshComponent* mesh) {
     const auto character = Cast<ACharacter>(GetOwner());
-    if (character == nullptr ||
-        character->GetMesh() != mesh) {
+    if (character == nullptr || character->GetMesh() != mesh) {
         return;
     }
 
@@ -184,8 +191,7 @@ void USTUWeaponComponent::OnEquipFinished(USkeletalMeshComponent* mesh) {
 
 void USTUWeaponComponent::OnReloadFinished(USkeletalMeshComponent* mesh) {
     const auto character = Cast<ACharacter>(GetOwner());
-    if (character == nullptr ||
-        character->GetMesh() != mesh) {
+    if (character == nullptr || character->GetMesh() != mesh) {
         return;
     }
 
@@ -193,25 +199,32 @@ void USTUWeaponComponent::OnReloadFinished(USkeletalMeshComponent* mesh) {
 }
 
 bool USTUWeaponComponent::CanFire() const {
-    return current_weapon_ != nullptr &&
-           !equip_anim_in_progress_ &&
-           !reload_anim_in_progress_;
+    return current_weapon_ != nullptr && !equip_anim_in_progress_ && !reload_anim_in_progress_;
 }
 
 bool USTUWeaponComponent::CanEquip() const {
-    return !equip_anim_in_progress_ &&
-           !reload_anim_in_progress_;
+    return !equip_anim_in_progress_ && !reload_anim_in_progress_;
 }
 
 bool USTUWeaponComponent::CanReload() const {
-    return current_weapon_ != nullptr &&
-           !equip_anim_in_progress_ &&
-           !reload_anim_in_progress_ &&
+    return current_weapon_ != nullptr && !equip_anim_in_progress_ && !reload_anim_in_progress_ &&
            current_weapon_->CanReload();
 }
 
-void USTUWeaponComponent::OnEmptyClip() {
-    ChangeClip();
+void USTUWeaponComponent::OnEmptyClip(ASTUBaseWeapon* ammo_empty_weapon) {
+    if (ammo_empty_weapon == nullptr) {
+        return;
+    }
+
+    if (current_weapon_ == ammo_empty_weapon) {
+        ChangeClip();
+    } else {
+        for (const auto& weapon : weapons_) {
+            if (weapon == ammo_empty_weapon) {
+                weapon->ChangeClip();
+            }
+        }
+    }
 }
 
 void USTUWeaponComponent::ChangeClip() {
