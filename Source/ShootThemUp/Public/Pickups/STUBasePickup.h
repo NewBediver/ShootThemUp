@@ -22,6 +22,15 @@ class SHOOTTHEMUP_API ASTUBasePickup : public AActor {
     UPROPERTY(VisibleAnywhere, Category = "Pickup")
     USphereComponent* CollisionComponent = nullptr;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
+    float respawn_time_ = 5.0f;
+
   public:
     virtual void Tick(float DeltaTime) override;
+
+  private:
+    virtual bool GivePickupTo(APawn* PlayerPawn);
+
+    void PickupWasTaken();
+    void Respawn();
 };
