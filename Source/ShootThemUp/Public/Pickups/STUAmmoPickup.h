@@ -17,7 +17,7 @@ class SHOOTTHEMUP_API ASTUAmmoPickup : public ASTUBasePickup {
               meta = (ClampMin = "1.0", ClampMax = "10.0"));
     int32 clips_amount_ = 10;
 
-    UPROPERTY(Editanywhere, BlueprintReadWrite, Category = "Pickup")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
     TSubclassOf<ASTUBaseWeapon> WeaponType;
 
   private:

@@ -26,6 +26,9 @@ class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent {
     UFUNCTION(BlueprintCallable, Category = "Health")
     float GetHealthPercent() const;
 
+    bool TryToAddHealth(float health_amount);
+    bool IsHealthFull() const;
+
   protected:
     // Called when the game starts
     virtual void BeginPlay() override;
