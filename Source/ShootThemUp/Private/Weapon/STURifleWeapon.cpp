@@ -3,7 +3,11 @@
 
 #include "Weapon/STURifleWeapon.h"
 #include "Engine/World.h"
-#include "DrawDebugHelpers.h"
+#include "Weapon/Components/STUWeaponFXComponent.h"
+
+ASTURifleWeapon::ASTURifleWeapon() {
+    weapon_fx_component_ = CreateDefaultSubobject<USTUWeaponFXComponent>("WeaponFXComponent");
+}
 
 void ASTURifleWeapon::StartFire() {
     GetWorldTimerManager().SetTimer(shot_timer_handle_, this, &ASTURifleWeapon::MakeShot,
@@ -13,6 +17,12 @@ void ASTURifleWeapon::StartFire() {
 
 void ASTURifleWeapon::StopFire() {
     GetWorldTimerManager().ClearTimer(shot_timer_handle_);
+}
+
+void ASTURifleWeapon::BeginPlay() {
+    Super::BeginPlay();
+
+    check(weapon_fx_component_);
 }
 
 void ASTURifleWeapon::MakeShot() {
@@ -36,12 +46,7 @@ void ASTURifleWeapon::MakeShot() {
         FVector::DotProduct(hit_result.ImpactPoint - GetMuzzleWorldLocation(),
                             trace_end - GetMuzzleWorldLocation()) > 0.0f) {
         MakeDamage(hit_result);
-        DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), hit_result.ImpactPoint, FColor::Red,
-                      false, 3.0f, 0, 3.0f);
-        DrawDebugSphere(GetWorld(), hit_result.ImpactPoint, 10.0f, 24, FColor::Yellow, false, 5.0f);
-    } else {
-        DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), trace_end, FColor::Red, false, 3.0f, 0,
-                      3.0f);
+        weapon_fx_component_->PlayImpactFX(hit_result);
     }
 
     DecreaseAmmo();
