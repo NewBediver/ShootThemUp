@@ -8,6 +8,7 @@
 
 class USTUWeaponFXComponent;
 class UNiagaraComponent;
+class UNiagaraSystem;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon {
@@ -33,6 +34,12 @@ class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon {
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     float damage_amount_ = 10.0f;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    UNiagaraSystem* trace_fx_ = nullptr;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    FString trace_target_name_ = "TraceTarget";
+
     UPROPERTY(visibleAnywhere, Category = "VFX")
     USTUWeaponFXComponent* weapon_fx_component_;
 
@@ -41,6 +48,8 @@ class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon {
 
     void InitMuzzleFX();
     void SetMuzzleFXVisibility(bool is_visible);
+
+    void SpawnTraceFX(const FVector& trace_start, const FVector& trace_end);
 
     FTimerHandle shot_timer_handle_;
 
