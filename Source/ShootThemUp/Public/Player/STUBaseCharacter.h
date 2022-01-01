@@ -72,7 +72,7 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
     void OnStopRunning();
 
     void OnDeath();
-    void OnHealthChanged(float health);
+    void OnHealthChanged(float health, float health_delta);
 
     UFUNCTION()
     void OnGroundLanded(const FHitResult& Hit);

@@ -26,4 +26,12 @@ class SHOOTTHEMUP_API USTUPlayerHUDWidget : public UUserWidget {
 
     UFUNCTION(BlueprintCallable, Category = "UI")
     bool IsPlayerSpectating() const;
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+    void OnTakeDamage();
+
+    bool Initialize() override;
+
+  private:
+    void OnHealthchanged(float health, float health_delta);
 };
