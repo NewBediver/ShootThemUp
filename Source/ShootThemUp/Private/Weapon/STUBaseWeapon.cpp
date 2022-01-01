@@ -105,8 +105,14 @@ FVector ASTUBaseWeapon::GetMuzzleWorldLocation() {
 
 void ASTUBaseWeapon::MakeHit(FHitResult& hit_result, const FVector& trace_start,
                              const FVector& trace_end) const {
+    if (GetWorld() == nullptr) {
+        return;
+    }  
+
     FCollisionQueryParams collision_params;
     collision_params.AddIgnoredActor(GetOwner());
+    collision_params.bReturnPhysicalMaterial = true;
+
     GetWorld()->LineTraceSingleByChannel(hit_result, trace_start, trace_end,
                                          ECollisionChannel::ECC_Visibility, collision_params);
 }
