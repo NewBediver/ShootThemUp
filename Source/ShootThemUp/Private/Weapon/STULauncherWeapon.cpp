@@ -38,6 +38,7 @@ void ASTULauncherWeapon::MakeShot() {
     }
 
     DecreaseAmmo();
+    SpawnMuzzleFX();
 }
 
 bool ASTULauncherWeapon::GetTraceData(FVector& trace_start, FVector& trace_end) const {

@@ -5,6 +5,8 @@
 #include "Engine/World.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
 
@@ -163,4 +165,10 @@ void ASTUBaseWeapon::LogAmmo() {
     FString ammo_info = "Ammo: " + FString::FromInt(current_ammo_.Bullets) + " / ";
     ammo_info += current_ammo_.IsInfinite ? "Infinite" : FString::FromInt(current_ammo_.Clips);
     UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *ammo_info);
+}
+
+UNiagaraComponent* ASTUBaseWeapon::SpawnMuzzleFX() {
+    return UNiagaraFunctionLibrary::SpawnSystemAttached(muzzle_fx_, WeaponMesh, muzzle_socket_name_,
+                                                        FVector::ZeroVector, FRotator::ZeroRotator,
+                                                        EAttachLocation::SnapToTarget, true);
 }
