@@ -3,7 +3,7 @@
 class STUUtils {
   public:
     template <typename T>
-    static T* GetSTUPlayerComponent(APawn* player_pawn) {
+    static T* GetSTUPlayerComponent(AActor* player_pawn) {
         if (player_pawn == nullptr) {
             return nullptr;
         }
