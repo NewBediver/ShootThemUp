@@ -92,16 +92,27 @@ APlayerController* ASTUBaseWeapon::GetPlayerController() const {
 }
 
 bool ASTUBaseWeapon::GetPlayerViewPoint(FVector& view_location, FRotator& view_rotation) const {
-    const auto controller = GetPlayerController();
-    if (controller == nullptr) {
+    const auto stu_character = Cast<ACharacter>(GetOwner());
+    if (stu_character == nullptr) {
         return false;
     }
+  
+    if (stu_character->IsPlayerControlled()) {
+        const auto controller = GetPlayerController();
+        if (controller == nullptr) {
+            return false;
+        }
 
-    controller->GetPlayerViewPoint(view_location, view_rotation);
+        controller->GetPlayerViewPoint(view_location, view_rotation);
+    } else {
+        view_location = GetMuzzleWorldLocation();
+        view_rotation = WeaponMesh->GetSocketRotation(muzzle_socket_name_);
+    }
+
     return true;
 }
 
-FVector ASTUBaseWeapon::GetMuzzleWorldLocation() {
+FVector ASTUBaseWeapon::GetMuzzleWorldLocation() const {
     return WeaponMesh->GetSocketTransform(muzzle_socket_name_).GetTranslation();
 }
 
