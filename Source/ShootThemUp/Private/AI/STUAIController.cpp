@@ -3,6 +3,7 @@
 #include "AI/STUAIController.h"
 #include "AI/STUAICharacter.h"
 #include "Components/STUAIPerceptionComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 ASTUAIController::ASTUAIController() {
     stu_ai_perception_component_ =
@@ -20,6 +21,13 @@ void ASTUAIController::OnPossess(APawn* in_pawn) {
 
 void ASTUAIController::Tick(float delta_time) {
     Super::Tick(delta_time);
-    const auto aim_actor = stu_ai_perception_component_->GetClosestEnemy();
+    const auto aim_actor = GetFocusOnActor();
     SetFocus(aim_actor);
+}
+
+AActor* ASTUAIController::GetFocusOnActor() const {
+    if (GetBlackboardComponent() == nullptr) {
+        return nullptr;
+    }
+    return Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(FocusOnKeyName));
 }
