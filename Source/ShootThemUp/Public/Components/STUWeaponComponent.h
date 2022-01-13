@@ -16,9 +16,9 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
   public:
     USTUWeaponComponent();
 
-    void StartFire();
+    virtual void StartFire();
     void StopFire();
-    void NextWeapon();
+    virtual void NextWeapon();
     void Reload();
 
     bool GetWeaponUIData(FWeaponUIData& ui_data) const;
@@ -29,6 +29,16 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
   protected:
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+    bool CanFire() const;
+    bool CanEquip() const;
+    void EquipWeapon(int32 weapon_index);
+
+    UPROPERTY();
+    ASTUBaseWeapon* current_weapon_ = nullptr;
+
+    UPROPERTY();
+    TArray<ASTUBaseWeapon*> weapons_;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     TArray<FWeaponData> WeaponData;
@@ -42,11 +52,12 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     UAnimMontage* EquipAnimMontage = nullptr;
 
+    int32 current_weapon_index_ = 0;
+
   private:
     void SpawnWeapons();
     void AttachWeaponToSocket(ASTUBaseWeapon* weapon, USceneComponent* scene_component,
                               const FName& socket_name);
-    void EquipWeapon(int32 weapon_index);
 
     void PlayAnimMontage(UAnimMontage* animation);
     void InitAnimations();
@@ -54,23 +65,13 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
     void OnEquipFinished(USkeletalMeshComponent* mesh);
     void OnReloadFinished(USkeletalMeshComponent* mesh);
 
-    bool CanFire() const;
-    bool CanEquip() const;
     bool CanReload() const;
 
     void OnEmptyClip(ASTUBaseWeapon* ammo_empty_weapon);
     void ChangeClip();
 
     UPROPERTY();
-    ASTUBaseWeapon* current_weapon_ = nullptr;
-
-    UPROPERTY();
-    TArray<ASTUBaseWeapon*> weapons_;
-
-    UPROPERTY();
     UAnimMontage* current_reload_anim_montage_ = nullptr;
-
-    int32 current_weapon_index_ = 0;
 
     bool equip_anim_in_progress_ = false;
     bool reload_anim_in_progress_ = false;

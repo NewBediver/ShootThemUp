@@ -29,6 +29,7 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor {
     FAmmoData GetAmmoData() const;
 
     bool TryToAddAmmo(int32 clips_amount);
+    bool IsAmmoEmpty() const;
 
   protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -58,9 +59,8 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor {
     FVector GetMuzzleWorldLocation() const;
     void MakeHit(FHitResult& hit_result, const FVector& trace_start,
                  const FVector& trace_end) const;
-
     void DecreaseAmmo();
-    bool IsAmmoEmpty() const;
+    
     bool IsClipEmpty() const;
     bool IsAmmoFull() const;
 
