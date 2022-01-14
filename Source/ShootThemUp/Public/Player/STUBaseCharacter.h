@@ -50,6 +50,7 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
 
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
+    virtual void OnDeath();
 
   public:
     // Called every frame
@@ -71,7 +72,6 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
     void OnStartRunnig();
     void OnStopRunning();
 
-    void OnDeath();
     void OnHealthChanged(float health, float health_delta);
 
     UFUNCTION()
