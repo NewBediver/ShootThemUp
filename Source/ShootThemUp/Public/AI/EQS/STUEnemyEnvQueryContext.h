@@ -11,7 +11,7 @@ class SHOOTTHEMUP_API USTUEnemyEnvQueryContext : public UEnvQueryContext {
     GENERATED_BODY()
 
   public:
-    void ProvideContext(FEnvQueryInstance& QueryInstance, FEnvQueryContextData& ContextData) const;
+    void ProvideContext(FEnvQueryInstance& QueryInstance, FEnvQueryContextData& ContextData) const override;
 
   protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
