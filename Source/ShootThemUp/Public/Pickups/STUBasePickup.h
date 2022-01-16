@@ -27,6 +27,7 @@ class SHOOTTHEMUP_API ASTUBasePickup : public AActor {
 
   public:
     virtual void Tick(float DeltaTime) override;
+    bool CouldBeTaken() const;
 
   private:
     virtual bool GivePickupTo(APawn* PlayerPawn);
@@ -37,4 +38,5 @@ class SHOOTTHEMUP_API ASTUBasePickup : public AActor {
     void GenerateRotationYaw();
 
     float rotation_yaw = 0.0f;
+    FTimerHandle respawn_timer_handle_;
 };
