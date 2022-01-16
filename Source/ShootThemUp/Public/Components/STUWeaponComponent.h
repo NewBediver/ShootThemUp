@@ -25,6 +25,7 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
     bool GetAmmoData(FAmmoData& ammo_data) const;
 
     bool TryToAddAmmo(TSubclassOf<ASTUBaseWeapon> weapon_type, int32 clips_amount);
+    bool NeedAmmo(TSubclassOf<ASTUBaseWeapon> weapon_type);
 
   protected:
     virtual void BeginPlay() override;
