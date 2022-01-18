@@ -61,9 +61,29 @@ void ASTUGameModeBase::GameTimerUpdate() {
 
         if (CurrentRound + 1 <= GameData.RoundsNum) {
             ++CurrentRound;
+            ResetPlayers();
             StartRound();
         } else {
             UE_LOG(LogSTUGameModeBase, Display, TEXT("======== GAME OVER ========"));
         }
     }
+}
+
+void ASTUGameModeBase::ResetPlayers() {
+    if (GetWorld() == nullptr) {
+        return;
+    }
+
+    for (auto it = GetWorld()->GetControllerIterator(); it; ++it) {
+        ResetOnePlayer(it->Get());
+    }
+}
+
+void ASTUGameModeBase::ResetOnePlayer(AController* controller) {
+    if (controller != nullptr
+            && controller->GetPawn() != nullptr) {
+        controller->GetPawn()->Reset();
+    }
+
+    RestartPlayer(controller);
 }

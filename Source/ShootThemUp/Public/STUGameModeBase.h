@@ -34,6 +34,9 @@ class SHOOTTHEMUP_API ASTUGameModeBase : public AGameModeBase {
     void StartRound();
     void GameTimerUpdate();
 
+    void ResetPlayers();
+    void ResetOnePlayer(AController* controller);
+
     int32 CurrentRound = 1;
     int32 RoundCountDown = 0;
     FTimerHandle GameRoundTimerHandle;
