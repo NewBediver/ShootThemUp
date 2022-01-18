@@ -31,4 +31,10 @@ class SHOOTTHEMUP_API ASTUGameModeBase : public AGameModeBase {
 
   private:
     void SpawnBots();
+    void StartRound();
+    void GameTimerUpdate();
+
+    int32 CurrentRound = 1;
+    int32 RoundCountDown = 0;
+    FTimerHandle GameRoundTimerHandle;
 };
