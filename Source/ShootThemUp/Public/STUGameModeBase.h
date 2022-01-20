@@ -21,6 +21,10 @@ class SHOOTTHEMUP_API ASTUGameModeBase : public AGameModeBase {
 
     void Killed(AController* killer_controller, AController* victim_controller);
 
+    FGameData GetGameData() const;
+    int32 GetCurrentRountNum() const;
+    int32 GetRoundSecondsRemaining() const;
+
   protected:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     TSubclassOf<AAIController> AIControllerClass;

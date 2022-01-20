@@ -52,6 +52,18 @@ void ASTUGameModeBase::Killed(AController* killer_controller, AController* victi
     }
 }
 
+FGameData ASTUGameModeBase::GetGameData() const {
+    return GameData;
+}
+
+int32 ASTUGameModeBase::GetCurrentRountNum() const {
+    return CurrentRound;
+}
+
+int32 ASTUGameModeBase::GetRoundSecondsRemaining() const {
+    return RoundCountDown;
+}
+
 void ASTUGameModeBase::SpawnBots() {
     if (GetWorld() == nullptr) {
         return;
