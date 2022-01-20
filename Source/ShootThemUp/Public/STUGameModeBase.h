@@ -19,6 +19,8 @@ class SHOOTTHEMUP_API ASTUGameModeBase : public AGameModeBase {
     void StartPlay() override;
     UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 
+    void Killed(AController* killer_controller, AController* victim_controller);
+
   protected:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     TSubclassOf<AAIController> AIControllerClass;
@@ -40,6 +42,8 @@ class SHOOTTHEMUP_API ASTUGameModeBase : public AGameModeBase {
     void CreateTeamsInfo();
     FLinearColor DetermineColorByTeamID(int32 team_id) const;
     void SetPlayerColor(AController* controller);
+
+    void LogPlayerInfo();
 
     int32 CurrentRound = 1;
     int32 RoundCountDown = 0;

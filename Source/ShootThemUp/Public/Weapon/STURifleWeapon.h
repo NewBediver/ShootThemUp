@@ -51,6 +51,8 @@ class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon {
 
     void SpawnTraceFX(const FVector& trace_start, const FVector& trace_end);
 
+    AController* GetController() const;
+
     FTimerHandle shot_timer_handle_;
 
     UPROPERTY()
