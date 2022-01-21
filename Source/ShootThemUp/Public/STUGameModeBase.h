@@ -25,6 +25,8 @@ class SHOOTTHEMUP_API ASTUGameModeBase : public AGameModeBase {
     int32 GetCurrentRountNum() const;
     int32 GetRoundSecondsRemaining() const;
 
+    void RespawnRequest(AController* controller);
+
   protected:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     TSubclassOf<AAIController> AIControllerClass;
@@ -48,6 +50,8 @@ class SHOOTTHEMUP_API ASTUGameModeBase : public AGameModeBase {
     void SetPlayerColor(AController* controller);
 
     void LogPlayerInfo();
+
+    void StartRespawn(AController* controller);
 
     int32 CurrentRound = 1;
     int32 RoundCountDown = 0;

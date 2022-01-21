@@ -6,8 +6,12 @@
 #include "UI/STUGameHUD.h"
 #include "AIController.h"
 #include "Player/STUPlayerState.h"
+#include "STUUtils.h"
+#include "Components/STURespawnComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogSTUGameModeBase, All, All);
+
+constexpr static int32 MinRoundTimeForRespawn = 10;
 
 ASTUGameModeBase::ASTUGameModeBase() {
     DefaultPawnClass = ASTUBaseCharacter::StaticClass();
@@ -28,8 +32,7 @@ void ASTUGameModeBase::StartPlay() {
 
 UClass* ASTUGameModeBase::GetDefaultPawnClassForController_Implementation(
     AController* InController) {
-    if (InController != nullptr &&
-        InController->IsA<AAIController>()) {
+    if (InController != nullptr && InController->IsA<AAIController>()) {
         return AIPawnClass;
     }
     return Super::GetDefaultPawnClassForController_Implementation(InController);
@@ -50,6 +53,8 @@ void ASTUGameModeBase::Killed(AController* killer_controller, AController* victi
     if (victim_player_state != nullptr) {
         victim_player_state->AddDeath();
     }
+
+    StartRespawn(victim_controller);
 }
 
 FGameData ASTUGameModeBase::GetGameData() const {
@@ -64,6 +69,10 @@ int32 ASTUGameModeBase::GetRoundSecondsRemaining() const {
     return RoundCountDown;
 }
 
+void ASTUGameModeBase::RespawnRequest(AController* controller) {
+    ResetOnePlayer(controller);
+}
+
 void ASTUGameModeBase::SpawnBots() {
     if (GetWorld() == nullptr) {
         return;
@@ -73,7 +82,8 @@ void ASTUGameModeBase::SpawnBots() {
         FActorSpawnParameters spawn_info;
         spawn_info.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-        const auto stu_ai_controller = GetWorld()->SpawnActor<AAIController>(AIControllerClass, spawn_info);
+        const auto stu_ai_controller =
+            GetWorld()->SpawnActor<AAIController>(AIControllerClass, spawn_info);
         RestartPlayer(stu_ai_controller);
     }
 }
@@ -113,8 +123,7 @@ void ASTUGameModeBase::ResetPlayers() {
 }
 
 void ASTUGameModeBase::ResetOnePlayer(AController* controller) {
-    if (controller != nullptr
-            && controller->GetPawn() != nullptr) {
+    if (controller != nullptr && controller->GetPawn() != nullptr) {
         controller->GetPawn()->Reset();
     }
 
@@ -133,7 +142,7 @@ void ASTUGameModeBase::CreateTeamsInfo() {
         if (controller == nullptr) {
             continue;
         }
-        
+
         const auto player_state = Cast<ASTUPlayerState>(controller->PlayerState);
         if (player_state == nullptr) {
             continue;
@@ -192,4 +201,18 @@ void ASTUGameModeBase::LogPlayerInfo() {
 
         player_state->LogInfo();
     }
+}
+
+void ASTUGameModeBase::StartRespawn(AController* controller) {
+    if (RoundCountDown <= MinRoundTimeForRespawn + GameData.RespawnTime) {
+        return;
+    }
+
+    const auto respawn_component =
+        STUUtils::GetSTUPlayerComponent<USTURespawnComponent>(controller);
+    if (respawn_component == nullptr) {
+        return;
+    }
+
+    respawn_component->Respawn(GameData.RespawnTime);
 }
