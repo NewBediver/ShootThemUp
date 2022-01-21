@@ -17,6 +17,15 @@ void USTURespawnComponent::Respawn(int32 respawn_time) {
         RespawnTimerHandle, this, &USTURespawnComponent::RespawnTimerUpdate, 1.0f, true);
 }
 
+int32 USTURespawnComponent::GetRespawnCountDown() const {
+    return RespawnCountDown;
+}
+
+bool USTURespawnComponent::IsRespawnInProgress() const {
+    return GetWorld() != nullptr
+        && GetWorld()->GetTimerManager().IsTimerActive(RespawnTimerHandle);
+}
+
 void USTURespawnComponent::RespawnTimerUpdate() {
     if (--RespawnCountDown == 0) {
         if (GetWorld() == nullptr) {
