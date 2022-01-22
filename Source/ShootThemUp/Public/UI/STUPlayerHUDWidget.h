@@ -33,5 +33,6 @@ class SHOOTTHEMUP_API USTUPlayerHUDWidget : public UUserWidget {
     bool Initialize() override;
 
   private:
-    void OnHealthchanged(float health, float health_delta);
+    void OnHealthChanged(float health, float health_delta);
+    void OnNewPawn(APawn* new_pawn);
 };

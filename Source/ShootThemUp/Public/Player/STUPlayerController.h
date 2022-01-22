@@ -15,6 +15,7 @@ class SHOOTTHEMUP_API ASTUPlayerController : public APlayerController {
   public:
     ASTUPlayerController();
 
+  protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USTURespawnComponent* RespawnComponent = nullptr;
 };
