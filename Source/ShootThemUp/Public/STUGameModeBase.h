@@ -53,6 +53,8 @@ class SHOOTTHEMUP_API ASTUGameModeBase : public AGameModeBase {
 
     void StartRespawn(AController* controller);
 
+    void GameOver();
+
     int32 CurrentRound = 1;
     int32 RoundCountDown = 0;
     FTimerHandle GameRoundTimerHandle;
