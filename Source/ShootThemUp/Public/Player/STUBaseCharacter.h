@@ -6,10 +6,7 @@
 #include "GameFramework/Character.h"
 #include "STUBaseCharacter.generated.h"
 
-class UCameraComponent;
-class USpringArmComponent;
 class USTUHealthComponent;
-class UTextRenderComponent;
 class USTUWeaponComponent;
 
 UCLASS()
@@ -22,16 +19,7 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
 
   protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    USpringArmComponent* SpringArmComponent = nullptr;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UCameraComponent* CameraComponent = nullptr;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USTUHealthComponent* HealthComponent = nullptr;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UTextRenderComponent* HealthTextComponent = nullptr;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USTUWeaponComponent* WeaponComponent = nullptr;
@@ -59,11 +47,8 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
-    // Called to bind functionality to input
-    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
     UFUNCTION(BlueprintCallable, Category = "Movement")
-    bool IsRunning() const;
+    virtual bool IsRunning() const;
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
     float GetMovementDirection() const;
@@ -71,17 +56,8 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
     void SetPlayerColor(const FLinearColor& color);
 
   private:
-    void MoveForward(float Amount);
-    void MoveRight(float Amount);
-
-    void OnStartRunnig();
-    void OnStopRunning();
-
     void OnHealthChanged(float health, float health_delta);
 
     UFUNCTION()
     void OnGroundLanded(const FHitResult& Hit);
-
-    bool want_to_run_ = false;
-    bool is_moving_forward_ = false;
 };
