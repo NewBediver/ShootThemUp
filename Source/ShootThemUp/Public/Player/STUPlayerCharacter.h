@@ -8,6 +8,7 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class USphereComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUPlayerCharacter : public ASTUBaseCharacter {
@@ -27,6 +28,10 @@ class SHOOTTHEMUP_API ASTUPlayerCharacter : public ASTUBaseCharacter {
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UCameraComponent* CameraComponent = nullptr;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    USphereComponent* CameraCollisionComponent = nullptr;
+
+    void BeginPlay() override;
     void OnDeath() override;
 
   private:
@@ -35,6 +40,16 @@ class SHOOTTHEMUP_API ASTUPlayerCharacter : public ASTUBaseCharacter {
 
     void OnStartRunnig();
     void OnStopRunning();
+    void CheckCameraOverlap();
+
+    UFUNCTION()
+    void OnCameraCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+                                       bool bFromSweep, const FHitResult& SweepResult);
+
+    UFUNCTION()
+    void OnCameraCollisionEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
     bool want_to_run_ = false;
     bool is_moving_forward_ = false;
