@@ -76,6 +76,25 @@ void ASTUGameModeBase::RespawnRequest(AController* controller) {
     ResetOnePlayer(controller);
 }
 
+bool ASTUGameModeBase::SetPause(APlayerController* pc,
+                                FCanUnpause can_unpause_delegate) {
+    const auto pause_set = Super::SetPause(pc, can_unpause_delegate);
+    if (pause_set) {
+        SetMatchState(ESTUMatchState::Pause);
+    }
+
+    return pause_set;
+}
+
+bool ASTUGameModeBase::ClearPause() {
+    const auto pause_cleared = Super::ClearPause();
+    if (pause_cleared) {
+        SetMatchState(ESTUMatchState::InProgress);
+    }
+
+    return pause_cleared;
+}
+
 void ASTUGameModeBase::SpawnBots() {
     if (GetWorld() == nullptr) {
         return;

@@ -28,6 +28,8 @@ class SHOOTTHEMUP_API ASTUGameModeBase : public AGameModeBase {
     int32 GetRoundSecondsRemaining() const;
 
     void RespawnRequest(AController* controller);
+    bool SetPause(APlayerController* pc, FCanUnpause can_unpause_delegate = FCanUnpause()) override;
+    bool ClearPause() override;
 
   protected:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
