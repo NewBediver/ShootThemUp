@@ -21,6 +21,9 @@ class SHOOTTHEMUP_API ASTUGameHUD : public AHUD {
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> pause_widget_class_;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> game_over_widget_class_;
+
     void BeginPlay() override;
 
   private:

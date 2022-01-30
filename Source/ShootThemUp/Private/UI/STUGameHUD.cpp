@@ -19,6 +19,8 @@ void ASTUGameHUD::BeginPlay() {
                     CreateWidget<UUserWidget>(GetWorld(), player_hud_widget_class_));
     GameWidgets.Add(ESTUMatchState::Pause,
                     CreateWidget<UUserWidget>(GetWorld(), pause_widget_class_));
+    GameWidgets.Add(ESTUMatchState::GameOver,
+                    CreateWidget<UUserWidget>(GetWorld(), game_over_widget_class_));
 
     for (auto game_widget_pair : GameWidgets) {
         const auto game_widget = game_widget_pair.Value;

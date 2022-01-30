@@ -27,4 +27,8 @@ class STUUtils {
                rhv_player_state != nullptr &&
                lhv_player_state->GetTeamID() != rhv_player_state->GetTeamID();
     }
+
+    static FText TextFromInt(int32 number) {
+        return FText::FromString(FString::FromInt(number));
+    }
 };

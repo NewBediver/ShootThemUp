@@ -171,6 +171,7 @@ void ASTUGameModeBase::CreateTeamsInfo() {
 
         player_state->SetTeamID(team_id);
         player_state->SetTeamColor(DetermineColorByTeamID(team_id));
+        player_state->SetPlayerName(controller->IsPlayerController() ? "Player" : "Bot");
         SetPlayerColor(controller);
 
         team_id = team_id == 1 ? 2 : 1;
