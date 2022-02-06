@@ -5,3 +5,7 @@
 FName USTUGameInstance::GetStartupLevelName() const {
     return StartupLevelName;
 }
+
+FName USTUGameInstance::GetMenuLevelName() const {
+    return MenuLevelName;
+}
