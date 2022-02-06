@@ -2,8 +2,16 @@
 
 #include "STUGameInstance.h"
 
-FName USTUGameInstance::GetStartupLevelName() const {
-    return StartupLevelName;
+FLevelData USTUGameInstance::GetStartupLevel() const {
+    return StartupLevel;
+}
+
+void USTUGameInstance::SetStartupLevel(const FLevelData& data) {
+    StartupLevel = data;
+}
+
+TArray<FLevelData> USTUGameInstance::GetLevelsData() const {
+    return LevelsData;
 }
 
 FName USTUGameInstance::GetMenuLevelName() const {

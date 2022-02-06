@@ -25,7 +25,7 @@ void USTUGoToMenuWidget::OnGoToMenu() {
         return;
     }
 
-    if (stu_game_instance->GetStartupLevelName().IsNone()) {
+    if (stu_game_instance->GetStartupLevel().LevelName.IsNone()) {
         UE_LOG(LogSTUGoToMenuWidget, Error, TEXT("Menu level name is none."));
         return;
     }
