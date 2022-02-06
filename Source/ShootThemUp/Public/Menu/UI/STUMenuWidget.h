@@ -18,7 +18,13 @@ class SHOOTTHEMUP_API USTUMenuWidget : public UUserWidget {
     UPROPERTY(meta = (Bindwidget))
     UButton* StartGameButton = nullptr;
 
+    UPROPERTY(meta = (Bindwidget))
+    UButton* QuitGameButton = nullptr;
+
   private:
     UFUNCTION()
     void OnStartGame();
+
+    UFUNCTION()
+    void OnQuitGame();
 };
