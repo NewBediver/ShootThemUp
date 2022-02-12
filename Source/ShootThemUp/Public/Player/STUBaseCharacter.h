@@ -47,6 +47,8 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
+    virtual void OnHealthChanged(float health, float health_delta);
+
     UFUNCTION(BlueprintCallable, Category = "Movement")
     virtual bool IsRunning() const;
 
@@ -56,8 +58,6 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
     void SetPlayerColor(const FLinearColor& color);
 
   private:
-    void OnHealthChanged(float health, float health_delta);
-
     UFUNCTION()
     void OnGroundLanded(const FHitResult& Hit);
 };
