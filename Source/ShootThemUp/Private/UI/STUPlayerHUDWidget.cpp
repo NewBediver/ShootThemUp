@@ -67,6 +67,9 @@ void USTUPlayerHUDWidget::NativeOnInitialized() {
 void USTUPlayerHUDWidget::OnHealthChanged(float health, float health_delta) {
     if (health_delta < 0.0f) {
         OnTakeDamage();
+        if (!IsAnimationPlaying(DamageAnimation)) {
+            PlayAnimation(DamageAnimation);
+        }
     }
     UpdateHealthBar();
 }
@@ -79,6 +82,7 @@ void USTUPlayerHUDWidget::OnNewPawn(APawn* new_pawn) {
         health_component->OnHealthChanged.AddUObject(this, &USTUPlayerHUDWidget::OnHealthChanged);
     }
     UpdateHealthBar();
+    Show();
 }
 
 void USTUPlayerHUDWidget::UpdateHealthBar() {

@@ -2,25 +2,24 @@
 
 #include "UI/STUGameHUD.h"
 #include "Engine/Canvas.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/STUBaseWidget.h"
 #include "STUGameModeBase.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogSTUGameHUD, All, All);
 
 void ASTUGameHUD::DrawHUD() {
     Super::DrawHUD();
-    //DrawCrossHair();
 }
 
 void ASTUGameHUD::BeginPlay() {
     Super::BeginPlay();
 
     GameWidgets.Add(ESTUMatchState::InProgress,
-                    CreateWidget<UUserWidget>(GetWorld(), player_hud_widget_class_));
+                    CreateWidget<USTUBaseWidget>(GetWorld(), player_hud_widget_class_));
     GameWidgets.Add(ESTUMatchState::Pause,
-                    CreateWidget<UUserWidget>(GetWorld(), pause_widget_class_));
+                    CreateWidget<USTUBaseWidget>(GetWorld(), pause_widget_class_));
     GameWidgets.Add(ESTUMatchState::GameOver,
-                    CreateWidget<UUserWidget>(GetWorld(), game_over_widget_class_));
+                    CreateWidget<USTUBaseWidget>(GetWorld(), game_over_widget_class_));
 
     for (auto game_widget_pair : GameWidgets) {
         const auto game_widget = game_widget_pair.Value;
@@ -65,6 +64,7 @@ void ASTUGameHUD::OnMatchStateChanged(ESTUMatchState state) {
 
     if (CurrentWidget != nullptr) {
         CurrentWidget->SetVisibility(ESlateVisibility::Visible);
+        CurrentWidget->Show();
     }
 
     UE_LOG(LogSTUGameHUD, Display, TEXT("Match state changed: %s"), *UEnum::GetValueAsString(state));
