@@ -42,5 +42,11 @@ class SHOOTTHEMUP_API USTULevelItemWidget : public UUserWidget {
     UFUNCTION()
     void OnLevelItemClicked();
 
+    UFUNCTION()
+    void OnLevelItemHovered();
+
+    UFUNCTION()
+    void OnLevelItemUnhovered();
+
     FLevelData LevelData;
 };

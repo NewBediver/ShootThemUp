@@ -22,9 +22,8 @@ FLevelData USTULevelItemWidget::GetLevelData() {
 }
 
 void USTULevelItemWidget::SetSelected(bool is_selected) {
-    if (FrameImage != nullptr) {
-        FrameImage->SetVisibility(is_selected ? ESlateVisibility::Visible
-                                              : ESlateVisibility::Hidden);
+    if (LevelImage != nullptr) {
+        LevelImage->SetColorAndOpacity(is_selected ? FLinearColor::Red : FLinearColor::White);
     }
 }
 
@@ -33,9 +32,23 @@ void USTULevelItemWidget::NativeOnInitialized() {
 
     if (LevelSelectButton != nullptr) {
         LevelSelectButton->OnClicked.AddDynamic(this, &USTULevelItemWidget::OnLevelItemClicked);
+        LevelSelectButton->OnHovered.AddDynamic(this, &USTULevelItemWidget::OnLevelItemHovered);
+        LevelSelectButton->OnUnhovered.AddDynamic(this, &USTULevelItemWidget::OnLevelItemUnhovered);
     }
 }
 
 void USTULevelItemWidget::OnLevelItemClicked() {
     OnLevelSelected.Broadcast(LevelData);
+}
+
+void USTULevelItemWidget::OnLevelItemHovered() {
+    if (FrameImage != nullptr) {
+        FrameImage->SetVisibility(ESlateVisibility::Visible);
+    }
+}
+
+void USTULevelItemWidget::OnLevelItemUnhovered() {
+    if (FrameImage != nullptr) {
+        FrameImage->SetVisibility(ESlateVisibility::Hidden);
+    }
 }

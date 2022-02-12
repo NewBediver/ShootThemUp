@@ -61,6 +61,7 @@ void USTUGameOverWidget::UpdatePlayersStat() {
         player_stat_row_widget->SetDeaths(STUUtils::TextFromInt(player_state->GetDeathsNum()));
         player_stat_row_widget->SetTeam(STUUtils::TextFromInt(player_state->GetTeamID()));
         player_stat_row_widget->SetPlayerIndicatorVisibility(controller->IsPlayerController());
+        player_stat_row_widget->SetTeamColor(player_state->GetTeamColor());
 
         PlayerStatBox->AddChild(player_stat_row_widget);
     }
