@@ -25,13 +25,21 @@ void USTUMenuWidget::NativeOnInitialized() {
     InitLevelItems();
 }
 
-void USTUMenuWidget::OnStartGame() {
+void USTUMenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimation* animation) {
+    if (animation != HideAnimation) {
+        return;
+    }
+
     const auto stu_game_instance = GetSTUGameInstance();
     if (stu_game_instance == nullptr) {
         return;
     }
 
     UGameplayStatics::OpenLevel(this, stu_game_instance->GetStartupLevel().LevelName);
+}
+
+void USTUMenuWidget::OnStartGame() {
+    PlayAnimation(HideAnimation);
 }
 
 void USTUMenuWidget::OnQuitGame() {

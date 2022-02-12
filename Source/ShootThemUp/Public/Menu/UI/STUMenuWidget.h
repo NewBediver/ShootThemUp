@@ -18,6 +18,7 @@ class SHOOTTHEMUP_API USTUMenuWidget : public USTUBaseWidget {
 
   protected:
     void NativeOnInitialized() override;
+    void OnAnimationFinished_Implementation(const UWidgetAnimation* animation);
 
     UPROPERTY(meta = (Bindwidget))
     UButton* StartGameButton = nullptr;
@@ -30,6 +31,9 @@ class SHOOTTHEMUP_API USTUMenuWidget : public USTUBaseWidget {
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> LevelItemWidgetClass;
+
+    UPROPERTY(meta = (BindWidgetAnim), Transient)
+    UWidgetAnimation* HideAnimation = nullptr;
 
   private:
     UFUNCTION()
