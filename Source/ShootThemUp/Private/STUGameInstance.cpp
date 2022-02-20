@@ -1,6 +1,7 @@
 // Shoot Them Up Game. All Right Reserved.
 
 #include "STUGameInstance.h"
+#include "Sound/STUSoundFunctionLibrary.h"
 
 FLevelData USTUGameInstance::GetStartupLevel() const {
     return StartupLevel;
@@ -16,4 +17,8 @@ TArray<FLevelData> USTUGameInstance::GetLevelsData() const {
 
 FName USTUGameInstance::GetMenuLevelName() const {
     return MenuLevelName;
+}
+
+void USTUGameInstance::ToggleVolume() {
+    USTUSoundFunctionLibrary::ToggleSoundClassVolume(MasterSoundClass);
 }

@@ -26,4 +26,5 @@ class SHOOTTHEMUP_API ASTUPlayerController : public APlayerController {
   private:
     void OnPauseGame();
     void OnMatchStateChanged(ESTUMatchState state);
+    void OnMuteSound();
 };

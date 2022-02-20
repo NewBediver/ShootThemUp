@@ -1,9 +1,9 @@
 // Shoot Them Up Game. All Right Reserved.
 
-
 #include "Player/STUPlayerController.h"
 #include "Components/STURespawnComponent.h"
 #include "STUGameModeBase.h"
+#include "STUGameInstance.h"
 
 ASTUPlayerController::ASTUPlayerController() {
     RespawnComponent = CreateDefaultSubobject<USTURespawnComponent>("STURespawnComponent");
@@ -29,6 +29,7 @@ void ASTUPlayerController::SetupInputComponent() {
     }
 
     InputComponent->BindAction("PauseGame", IE_Pressed, this, &ASTUPlayerController::OnPauseGame);
+    InputComponent->BindAction("Mute", IE_Pressed, this, &ASTUPlayerController::OnMuteSound);
 }
 
 void ASTUPlayerController::OnPauseGame() {
@@ -48,4 +49,17 @@ void ASTUPlayerController::OnMatchStateChanged(ESTUMatchState state) {
         SetInputMode(FInputModeUIOnly());
         bShowMouseCursor = true;
     }
+}
+
+void ASTUPlayerController::OnMuteSound() {
+    if (GetWorld() == nullptr) {
+        return;
+    }
+
+    const auto stu_game_instance = GetWorld()->GetGameInstance<USTUGameInstance>();
+    if (stu_game_instance == nullptr) {
+        return;
+    }
+
+    stu_game_instance->ToggleVolume();
 }
