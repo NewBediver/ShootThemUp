@@ -82,10 +82,10 @@ class SHOOTTHEMUP_API USTUHealthComponent : public UActorComponent {
 
     void Killed(AController* killer_controller);
 
-    
-
     void ApplyDamage(float damage, AController* instigated_by);
     float GetPointDamageModifier(AActor* damaged_actor, const FName& bone_name);
+
+    void ReportDamageEvent(float damage, AController* instigated_by);
 
     float health_ = 0.0f;
     FTimerHandle heal_time_handle_;
