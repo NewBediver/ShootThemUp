@@ -95,7 +95,9 @@ void ASTURifleWeapon::MakeDamage(const FHitResult& hit_result) {
         return;
     }
 
-    damaged_actor->TakeDamage(damage_amount_, FDamageEvent(), GetController(), this);
+    FPointDamageEvent point_damage_event;
+    point_damage_event.HitInfo = hit_result;
+    damaged_actor->TakeDamage(damage_amount_, point_damage_event, GetController(), this);
 }
 
 void ASTURifleWeapon::InitFX() {
