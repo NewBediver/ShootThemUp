@@ -33,6 +33,8 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor {
     bool IsAmmoEmpty() const;
     bool IsAmmoFull() const;
 
+    virtual void Zoom(bool enabled);
+
   protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
     USkeletalMeshComponent* WeaponMesh = nullptr;

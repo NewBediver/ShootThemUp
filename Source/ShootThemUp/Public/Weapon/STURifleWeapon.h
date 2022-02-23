@@ -20,6 +20,7 @@ class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon {
 
     void StartFire() override;
     void StopFire() override;
+    void Zoom(bool enabled) override;
 
   protected:
     void BeginPlay() override;
@@ -44,6 +45,9 @@ class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon {
     UPROPERTY(visibleAnywhere, Category = "VFX")
     USTUWeaponFXComponent* weapon_fx_component_;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    float fov_zoom_angle_ = 50.0f;
+
   private:
     void MakeDamage(const FHitResult& hit_result);
 
@@ -61,4 +65,6 @@ class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon {
 
     UPROPERTY()
     UAudioComponent* FireAudioComponent = nullptr;
+
+    float default_camera_fov_ = 90.0f;
 };

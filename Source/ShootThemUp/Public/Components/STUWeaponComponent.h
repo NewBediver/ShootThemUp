@@ -20,6 +20,7 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent {
     void StopFire();
     virtual void NextWeapon();
     void Reload();
+    void Zoom(bool enabled);
 
     bool GetWeaponUIData(FWeaponUIData& ui_data) const;
     bool GetAmmoData(FAmmoData& ammo_data) const;

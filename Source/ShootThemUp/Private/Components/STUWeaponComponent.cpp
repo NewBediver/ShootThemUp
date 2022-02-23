@@ -42,6 +42,12 @@ void USTUWeaponComponent::Reload() {
     ChangeClip();
 }
 
+void USTUWeaponComponent ::Zoom(bool enabled) {
+    if (current_weapon_ != nullptr) {
+        current_weapon_->Zoom(enabled);
+    }
+}
+
 bool USTUWeaponComponent::GetWeaponUIData(FWeaponUIData& ui_data) const {
     if (current_weapon_ != nullptr) {
         ui_data = current_weapon_->GetUIData();
@@ -144,6 +150,7 @@ void USTUWeaponComponent::EquipWeapon(int32 weapon_index) {
     }
 
     if (current_weapon_ != nullptr) {
+        current_weapon_->Zoom(false);
         current_weapon_->StopFire();
         AttachWeaponToSocket(current_weapon_, character->GetMesh(), WeaponArmorySocketName);
     }

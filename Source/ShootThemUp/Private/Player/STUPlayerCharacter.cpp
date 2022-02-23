@@ -91,6 +91,12 @@ void ASTUPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
                                      &USTUWeaponComponent::NextWeapon);
     PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent,
                                      &USTUWeaponComponent::Reload);
+
+    DECLARE_DELEGATE_OneParam(FZoomInputSignature, bool)
+    PlayerInputComponent->BindAction<FZoomInputSignature>("Zoom", IE_Pressed, WeaponComponent,
+                                     &USTUWeaponComponent::Zoom, true);
+    PlayerInputComponent->BindAction<FZoomInputSignature>("Zoom", IE_Released, WeaponComponent,
+                                     &USTUWeaponComponent::Zoom, false);
 }
 
 bool ASTUPlayerCharacter::IsRunning() const {

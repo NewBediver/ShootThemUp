@@ -160,6 +160,8 @@ bool ASTUBaseWeapon::IsAmmoFull() const {
            current_ammo_.Bullets == default_ammo_.Bullets;
 }
 
+void ASTUBaseWeapon::Zoom(bool enabled) {}
+
 void ASTUBaseWeapon::LogAmmo() {
     FString ammo_info = "Ammo: " + FString::FromInt(current_ammo_.Bullets) + " / ";
     ammo_info += current_ammo_.IsInfinite ? "Infinite" : FString::FromInt(current_ammo_.Clips);
