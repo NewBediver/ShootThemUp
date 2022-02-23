@@ -61,6 +61,8 @@ class SHOOTTHEMUP_API ASTUGameModeBase : public AGameModeBase {
 
     void SetMatchState(ESTUMatchState state);
 
+    void StopAllFire();
+
     ESTUMatchState MatchState = ESTUMatchState::WaitingToStart;
     int32 CurrentRound = 1;
     int32 RoundCountDown = 0;

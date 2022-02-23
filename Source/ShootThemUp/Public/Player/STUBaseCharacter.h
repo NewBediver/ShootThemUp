@@ -50,6 +50,8 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter {
   public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
+    void TurnOff() override;
+    void Reset() override;
 
     virtual void OnHealthChanged(float health, float health_delta);
 
